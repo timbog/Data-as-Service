@@ -38,7 +38,8 @@ public class MetadataManagerTest {
 
     private DaaSMetadata meta;
     private UUID testId;
-
+    private String guestUserName = "guest";
+    private String adminUserName = "admin";
     private MockMvc mockMvc ;
 
     @Autowired
@@ -59,15 +60,16 @@ public class MetadataManagerTest {
         meta.setUUID(testId);
         Map<String, String> metaRecords = new HashMap<String, String>();
         Map<String, String> acl = new HashMap<String, String>();
-        acl.put("adminUser", UserMetadataAccess.FULL.name());
-        acl.put("guestUser", UserMetadataAccess.READMETA.name());
+        acl.put(adminUserName, UserMetadataAccess.FULL.name());
+        acl.put(guestUserName, UserMetadataAccess.READMETA.name());
+        //acl.put("readMetaUser")
         String json = (new Gson()).toJson(acl);
         metaRecords.put("ACL", json);
         metaRecords.put("admin_email", "admin@emc.com");
-        metaRecords.put("location", MetaDataTestManager.METADATASTORAGE.getAbsolutePath());
+        metaRecords.put("location", "/tmp");
         meta.setMeta(metaRecords);
         try {
-            metadataManager.putMeta(testId, metaRecords, "adminUser");
+            metadataManager.putMeta(testId, metaRecords, adminUserName);
         }
         catch (MetadataCannotBeChangedException ex) {
             Assert.fail();
@@ -79,8 +81,8 @@ public class MetadataManagerTest {
     @Test
     public void testAdminHasFullAccess() {
         try {
-            DaaSMetadata meta1 = metadataManager.getMeta(testId, "adminUser");
-            assertTrue(meta1.getMeta().get("location").equals(MetaDataTestManager.METADATASTORAGE.getAbsolutePath()));
+            DaaSMetadata meta1 = metadataManager.getMeta(testId, adminUserName);
+            assertTrue(meta1.getMeta().get("location").equals("/tmp"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,6 +101,24 @@ public class MetadataManagerTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void testUserCanOnlyReadMeta() {
+        try {
+            DaaSMetadata meta = metadataManager.getMeta(testId, guestUserName);
+            assertTrue(meta.getMeta().get("location").equals("/tmp"));
+            try {
+                metadataManager.deleteMeta(testId, guestUserName);
+            }
+            catch (MetadataCannotBeChangedException ex) {
+                return;
+            }
+            Assert.fail();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }    
 
     @After
     public void tearDown() {
