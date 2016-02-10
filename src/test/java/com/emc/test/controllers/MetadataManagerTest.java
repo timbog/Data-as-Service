@@ -102,6 +102,7 @@ public class MetadataManagerTest {
         }
     }
 
+
     @Test
     public void testUserCanOnlyReadMeta() {
         try {
@@ -118,7 +119,7 @@ public class MetadataManagerTest {
             e.printStackTrace();
             Assert.fail();
         }
-    }    
+    }
 
     @After
     public void tearDown() {

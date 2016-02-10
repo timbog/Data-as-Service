@@ -18,6 +18,7 @@ public class UserTestAuthenticator implements UserAuthenticator{
 
     @Override
     public boolean hasAccess(String username, UserMetadataAccess access, DaaSMetadata meta) {
+        //In test case it is supposed that any user can create meta
         if (access.equals(UserMetadataAccess.CREATE)) {
             return true;
         }

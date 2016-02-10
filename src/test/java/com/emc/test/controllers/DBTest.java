@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * Created by timofb on 27-Jan-16.
  */
+@Deprecated
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = TestApplication.class)
 public class DBTest {
@@ -28,11 +29,6 @@ public class DBTest {
         metaEntity.setUuid("ccc");
         metaEntity.setName("address");
         metaEntity.setValue("Saint-");
-        ///dao.getMetaById("ccc")
-        //System.out.println(dao.getMetaById("ccc").getValue());
-        //dao.putMetadata(metaEntity);
-        //dao.putMetaUnit(entity);
-        //int a = 5;
     }
 
     @Test
