@@ -10,20 +10,10 @@ import java.util.List;
  * Created by timofb on 11/5/2015.
  */
 public interface DataManager {
-    public List<DaaSUser> getUserList();
+    public String createDataSet(DaaSMetadata metadata, String username);
 
-    public boolean addUser(DaaSUser user);
+    public String putObject(String datasetId, DataEntity object, String username);
 
-    public List<DaaSUser> searchUsers(DaaSUser user);
-
-    public DaaSUser getUser(String username);
-
-    public boolean deleteUser(String username);
-
-    public String createDataSet(DaaSMetadata metadata);
-
-    public String putObject(String datasetId, DataEntity object);
-
-    public boolean deleteDataEntity(String objectId);
+    public boolean deleteDataEntity(String objectId, String username);
 
 }

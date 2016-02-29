@@ -10,45 +10,18 @@ import java.util.List;
  * Created by timofb on 11/8/2015.
  */
 public class DataManagerMock implements DataManager {
-
     @Override
-    public String putObject(String dataSetId, DataEntity object) {
-        return "test";
-    }
-
-    @Override
-    public List<DaaSUser> getUserList() {
+    public String createDataSet(DaaSMetadata metadata, String username) {
         return null;
     }
 
     @Override
-    public boolean addUser(DaaSUser user) {
+    public String putObject(String datasetId, DataEntity object, String username) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteDataEntity(String objectId, String username) {
         return false;
     }
-
-    @Override
-    public List<DaaSUser> searchUsers(DaaSUser user) {
-        return null;
-    }
-
-    @Override
-    public DaaSUser getUser(String username) {
-        return null;
-    }
-
-    @Override
-    public boolean deleteUser(String username) {
-        return false;
-    }
-
-    @Override
-    public String createDataSet(DaaSMetadata metadata) {
-        return null;
-    }
-
-    @Override
-    public boolean deleteDataEntity(String objectId) {
-        return false;
-    }
-
 }

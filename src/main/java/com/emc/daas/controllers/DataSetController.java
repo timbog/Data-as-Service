@@ -5,6 +5,8 @@ import com.emc.daas.metadata.DaaSMetadata;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,11 +24,16 @@ public class DataSetController {
     @ApiOperation(value = "Create dataset")
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public String createDataSet(@RequestBody DaaSMetadata meta) {
-        return manager.createDataSet(meta);
+        return manager.createDataSet(meta, getCurrentUserName());
     }
 
     @RequestMapping(value = "/{dataSetId}", method = RequestMethod.DELETE)
     public boolean deleteDataSet(@PathVariable String dataSetId) {
-        return manager.deleteDataEntity(dataSetId);
+        return manager.deleteDataEntity(dataSetId,  getCurrentUserName());
+    }
+
+    private String getCurrentUserName() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getName();
     }
 }
