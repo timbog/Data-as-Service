@@ -1,12 +1,11 @@
 package com.emc.daas.metadata_mgmt;
 
 import com.emc.daas.access_control.UserAuthenticator;
-import com.emc.daas.access_control.UserMetadataAccess;
+import com.emc.daas.access_control.UserAccessMode;
 import com.emc.daas.metadata.DaaSMetadata;
 import com.emc.daas.metadata_mgmt.exceptions.MetadataCannotBeAccessedException;
 import com.emc.daas.metadata_mgmt.exceptions.MetadataCannotBeChangedException;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -24,7 +23,7 @@ public abstract class MetadataManager {
     }
 
     public boolean putMeta(UUID id, Map<String, String> meta, String username) throws MetadataCannotBeChangedException {
-        if (authenticator.hasAccess(username, UserMetadataAccess.CREATE, null)) {
+        if (authenticator.hasAccess(username, UserAccessMode.CREATE, null)) {
             return this.putMetaToStorage(new DaaSMetadata(id, meta));
         }
         throw new MetadataCannotBeChangedException();
@@ -32,7 +31,7 @@ public abstract class MetadataManager {
 
     public DaaSMetadata getMeta(UUID id, String username) throws MetadataCannotBeAccessedException {
         DaaSMetadata meta = this.getMetaFromStorage(id);
-        if (authenticator.hasAccess(username, UserMetadataAccess.READMETA, meta)) {
+        if (authenticator.hasAccess(username, UserAccessMode.READMETA, meta)) {
             return meta;
         }
         else {
@@ -50,7 +49,7 @@ public abstract class MetadataManager {
 
     public boolean deleteMeta(UUID id, String username) throws MetadataCannotBeChangedException {
         DaaSMetadata meta = this.getMetaFromStorage(id);
-        if (authenticator.hasAccess(username, UserMetadataAccess.FULL, meta)) {
+        if (authenticator.hasAccess(username, UserAccessMode.FULL, meta)) {
             return this.deleteMetaFromStorage(id);
         }
         throw new MetadataCannotBeChangedException();

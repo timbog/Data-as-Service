@@ -1,6 +1,10 @@
 package com.emc.test.config;
 
+import com.emc.daas.access_control.UserAccessMode;
+import com.emc.daas.access_control.UserAuthenticator;
 import com.emc.daas.data_mgmt.DataManagerMock;
+import com.emc.daas.metadata.DaaSMetadata;
+import com.emc.daas.metadata_mgmt.MetaDataManagerMock;
 import com.emc.daas.user_mgmt.UserManagerMock;
 import com.emc.test.controllers.MetaDataTestManager;
 import com.emc.test.controllers.UserTestAuthenticator;
@@ -22,7 +26,13 @@ public class ContextConfiguration {
 
     @Bean
     public DataManagerMock dataManager() {
-        return new DataManagerMock();
+        UserAuthenticator authenticator = new UserAuthenticator() {
+            @Override
+            public boolean hasAccess(String username, UserAccessMode action, DaaSMetadata meta) {
+                return false;
+            }
+        };
+        return new DataManagerMock(authenticator, new MetaDataManagerMock(authenticator));
     }
 
     @Bean

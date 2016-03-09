@@ -2,6 +2,7 @@ package com.emc.daas.controllers;
 
 import com.emc.daas.data.DaaSObject;
 import com.emc.daas.data_mgmt.DataManager;
+import com.emc.daas.metadata.DaaSMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;

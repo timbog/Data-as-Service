@@ -1,7 +1,9 @@
 package com.emc.daas.data_mgmt;
 
+import com.emc.daas.access_control.UserAuthenticator;
 import com.emc.daas.data.DataEntity;
 import com.emc.daas.metadata.DaaSMetadata;
+import com.emc.daas.metadata_mgmt.MetadataManager;
 import com.emc.daas.user.DaaSUser;
 
 import java.util.List;
@@ -9,19 +11,24 @@ import java.util.List;
 /**
  * Created by timofb on 11/8/2015.
  */
-public class DataManagerMock implements DataManager {
-    @Override
-    public String createDataSet(DaaSMetadata metadata, String username) {
-        return null;
+public class DataManagerMock extends DataManager {
+
+    public DataManagerMock(UserAuthenticator authenticator, MetadataManager metadataManager) {
+        super(authenticator, metadataManager);
     }
 
     @Override
-    public String putObject(String datasetId, DataEntity object, String username) {
-        return null;
+    protected void createDataSet(DaaSMetadata metadata) {
+
     }
 
     @Override
-    public boolean deleteDataEntity(String objectId, String username) {
+    protected boolean deleteDataEntity(String objectId) {
         return false;
+    }
+
+    @Override
+    protected void putObjectToStorage(String datasetId, DataEntity object) {
+
     }
 }

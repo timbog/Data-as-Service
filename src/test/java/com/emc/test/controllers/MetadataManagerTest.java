@@ -1,6 +1,6 @@
 package com.emc.test.controllers;
 
-import com.emc.daas.access_control.UserMetadataAccess;
+import com.emc.daas.access_control.UserAccessMode;
 import com.emc.daas.metadata.DaaSMetadata;
 import com.emc.daas.metadata_mgmt.exceptions.MetadataCannotBeChangedException;
 import com.emc.test.config.TestApplication;
@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.junit.After;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -60,8 +59,8 @@ public class MetadataManagerTest {
         meta.setUUID(testId);
         Map<String, String> metaRecords = new HashMap<String, String>();
         Map<String, String> acl = new HashMap<String, String>();
-        acl.put(adminUserName, UserMetadataAccess.FULL.name());
-        acl.put(guestUserName, UserMetadataAccess.READMETA.name());
+        acl.put(adminUserName, UserAccessMode.FULL.name());
+        acl.put(guestUserName, UserAccessMode.READMETA.name());
         //acl.put("readMetaUser")
         String json = (new Gson()).toJson(acl);
         metaRecords.put("ACL", json);
