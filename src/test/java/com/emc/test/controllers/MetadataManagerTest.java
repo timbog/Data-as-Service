@@ -33,48 +33,12 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = TestApplication.class)
 @WebAppConfiguration
-public class MetadataManagerTest {
+public class MetadataManagerTest extends ManagerTest{
 
-    private DaaSMetadata meta;
-    private UUID testId;
-    private String guestUserName = "guest";
-    private String adminUserName = "admin";
-    private MockMvc mockMvc ;
-
-    @Autowired
-    WebApplicationContext wac;
-
-    @Autowired
-    private MetadataDBTestManager metadataManager;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac)
-                .apply(springSecurity())
-                .dispatchOptions(true).build();
-
-        meta = new DaaSMetadata();
-        testId = UUID.randomUUID();
-        meta.setUUID(testId);
-        Map<String, String> metaRecords = new HashMap<String, String>();
-        Map<String, String> acl = new HashMap<String, String>();
-        acl.put(adminUserName, UserAccessMode.FULL.name());
-        acl.put(guestUserName, UserAccessMode.READMETA.name());
-        //acl.put("readMetaUser")
-        String json = (new Gson()).toJson(acl);
-        metaRecords.put("ACL", json);
-        metaRecords.put("admin_email", "admin@emc.com");
-        metaRecords.put("location", "/tmp");
-        meta.setMeta(metaRecords);
-        try {
-            metadataManager.putMeta(testId, metaRecords, adminUserName);
-        }
-        catch (MetadataCannotBeChangedException ex) {
-            Assert.fail();
-        }
-        //metadataManager.pu
-        //metadataManager.putMetaToStorage(meta);
+        this.config();
     }
 
     @Test

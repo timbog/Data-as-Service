@@ -17,7 +17,7 @@ import java.util.function.Predicate;
  * TODO Add access control functionality 
  */
 public abstract class MetadataManager {
-    private UserAuthenticator authenticator;
+    protected UserAuthenticator authenticator;
     public MetadataManager(UserAuthenticator authenticator) {
         this.authenticator = authenticator;
     }

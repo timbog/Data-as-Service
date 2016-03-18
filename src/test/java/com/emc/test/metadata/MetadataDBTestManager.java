@@ -87,4 +87,8 @@ public class MetadataDBTestManager extends MetadataManager {
     public void cleanData() {
         metadataDao.cleanAll();
     }
+
+    public UserAuthenticator getUserAuthenticator(){
+        return this.authenticator;
+    }
 }

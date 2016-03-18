@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * Created by timofb on 11/5/2015.
  */
@@ -23,13 +25,13 @@ public class ObjectController {
     DataManager manager;
 
     @RequestMapping(value = "/{dataSetId}", method = RequestMethod.POST)
-    public String putObject(@PathVariable String dataSetId, @RequestBody DaaSObject data) {
+    public boolean putObject(@PathVariable String dataSetId, @RequestBody DaaSObject data) {
         return manager.putObject(dataSetId, data, getCurrentUserName());
     }
 
     @RequestMapping(value = "/{objectId}", method = RequestMethod.DELETE)
     public boolean deleteObject(@PathVariable String objectId) {
-        return manager.deleteDataEntity(objectId, getCurrentUserName());
+        return manager.deleteDataEntity(UUID.fromString(objectId), getCurrentUserName());
     }
 
     private String getCurrentUserName() {

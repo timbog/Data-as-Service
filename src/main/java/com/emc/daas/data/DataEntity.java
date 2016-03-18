@@ -1,19 +1,21 @@
 package com.emc.daas.data;
 
+import java.util.UUID;
+
 /**
  * Created by timofb on 10/31/2015.
  */
 public class DataEntity {
-    protected String id;
+    protected UUID id;
     public DataEntity() {
 
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 }

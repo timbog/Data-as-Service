@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * Created by timofb on 11/12/2015.
  */
@@ -23,13 +25,13 @@ public class DataSetController {
 
     @ApiOperation(value = "Create dataset")
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public String createDataSet(@RequestBody DaaSMetadata meta) {
-        return manager.createDataSet(meta, getCurrentUserName());
+    public void createDataSet(@RequestBody DaaSMetadata meta) {
+        manager.createDataSet(meta, getCurrentUserName());
     }
 
     @RequestMapping(value = "/{dataSetId}", method = RequestMethod.DELETE)
     public boolean deleteDataSet(@PathVariable String dataSetId) {
-        return manager.deleteDataEntity(dataSetId,  getCurrentUserName());
+        return manager.deleteDataEntity(UUID.fromString(dataSetId),  getCurrentUserName());
     }
 
     private String getCurrentUserName() {

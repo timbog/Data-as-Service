@@ -9,6 +9,7 @@ import com.emc.daas.user_mgmt.UserManagerMock;
 import com.emc.test.controllers.MetaDataTestManager;
 import com.emc.test.controllers.UserTestAuthenticator;
 import com.emc.test.dao.MetadataDao;
+import com.emc.test.data.DataTestManager;
 import com.emc.test.metadata.MetadataDBTestManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,22 +26,20 @@ public class ContextConfiguration {
     MetadataDao metadataDao;
 
     @Bean
-    public DataManagerMock dataManager() {
-        UserAuthenticator authenticator = new UserAuthenticator() {
-            @Override
-            public boolean hasAccess(String username, UserAccessMode action, DaaSMetadata meta) {
-                return false;
-            }
-        };
-        return new DataManagerMock(authenticator, new MetaDataManagerMock(authenticator));
-    }
-
-    @Bean
     public MetadataDBTestManager metadataManager() {
         UserTestAuthenticator authenticator = new UserTestAuthenticator();
         MetadataDBTestManager manager = new MetadataDBTestManager(authenticator, metadataDao);
         authenticator.setManager(manager);
         return manager;
+    }
+
+    @Autowired
+    MetadataDBTestManager metadataDBTestManager;
+
+    @Bean
+    public DataTestManager dataManager() {
+        //UserAuthenticator authenticator = new UserTestAuthenticator();
+        return new DataTestManager(metadataDBTestManager.getUserAuthenticator(), metadataDBTestManager);
     }
 
     @Bean

@@ -3,6 +3,7 @@ package com.emc.daas.data_mgmt;
 import com.emc.daas.access_control.UserAuthenticator;
 import com.emc.daas.access_control.UserAccessMode;
 import com.emc.daas.data.DataEntity;
+import com.emc.daas.data_mgmt.exceptions.NoSuchDatasetException;
 import com.emc.daas.metadata.DaaSMetadata;
 import com.emc.daas.metadata_mgmt.MetadataManager;
 import com.emc.daas.metadata_mgmt.exceptions.MetadataCannotBeAccessedException;
@@ -10,6 +11,7 @@ import com.emc.daas.metadata_mgmt.exceptions.MetadataCannotBeChangedException;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -24,43 +26,54 @@ public abstract class DataManager {
         this.metadataManager = metadataManager;
     }
 
-    protected abstract void createDataSet(DaaSMetadata metadata);
+    protected abstract void createDataSet(String datasetId);
 
-    protected abstract void putObjectToStorage(String datasetId, DataEntity object);
+    protected abstract void putObjectToStorage(String datasetId, DataEntity object) throws NoSuchDatasetException;
 
-    protected abstract boolean deleteDataEntity(String objectId);
+    protected abstract boolean deleteDataEntity(UUID objectId);
 
-    public String putObject(String datasetId, DataEntity object, String username) {
+    protected abstract boolean deleteDataEntity(UUID objectId, UUID datasetId);
+
+    public boolean putObject(String datasetId, DataEntity object, String username) {
         if (authenticator.hasAccess(username, UserAccessMode.CREATE, null)) {
             try {
-                final UUID newId = UUID.randomUUID();
-                metadataManager.putMeta(newId, new HashMap<String, String>(), username);
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("dataset", datasetId);
+                metadataManager.putMeta(object.getId(), map, username);
                 this.putObjectToStorage(datasetId, object);
-                return newId.toString();
+                return true;
             }
             catch (MetadataCannotBeChangedException ex) {
             }
+            catch (NoSuchDatasetException ex1) {
+            }
         }
-        return null;
+        return false;
     }
 
-    public String createDataSet(DaaSMetadata metadata, String username) {
+    public void createDataSet(DaaSMetadata metadata, String username) {
         if (authenticator.hasAccess(username, UserAccessMode.CREATE, null)) {
             try {
-                this.createDataSet(metadata);
-                final UUID newId = UUID.randomUUID();
-                metadataManager.putMeta(UUID.randomUUID(), new HashMap<String, String>(), username);
-                return newId.toString();
+                UUID datasetId = metadata.getUUID();
+                this.createDataSet(datasetId.toString());
+                metadataManager.putMeta(metadata.getUUID(), metadata.getMeta(), username);
             }
             catch (MetadataCannotBeChangedException ex) {
             }
         }
-        return null;
     }
 
-    public boolean deleteDataEntity(String objectId, String username) {
-        if (authenticator.hasAccess(username, UserAccessMode.FULL, null)) {
-            return this.deleteDataEntity(objectId);
+    public boolean deleteDataEntity(UUID objectId, String username){
+        try {
+            DaaSMetadata meta = metadataManager.getMeta(objectId, username);
+            if (authenticator.hasAccess(username, UserAccessMode.FULL, meta)) {
+                if (meta.getMeta().containsKey("dataset")) {
+                    return this.deleteDataEntity(objectId, UUID.fromString(meta.getMeta().get("dataset")));
+                }
+                return this.deleteDataEntity(objectId);
+            }
+        }
+        catch (MetadataCannotBeAccessedException ex){
         }
         return false;
     }
